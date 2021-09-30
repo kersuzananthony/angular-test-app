@@ -52,7 +52,6 @@ jobs:
         run: |
           npm run build:ci
           
-      - name: Sonar Scan
       - name: SonarQube Scan
         uses: sijomc/sonarscan-action@master
         with:
