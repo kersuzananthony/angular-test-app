@@ -58,7 +58,14 @@ jobs:
           host: ${{ secrets.SONARQUBE_HOST }}
           login: ${{ secrets.SONARQUBE_TOKEN }}
           scannerOptions: ${{ secrets.SCANNER_OPTIONS }}
-          exclusions: ${{ secrets.SONAR_EXCLUSIONS }}
+          exclusions: dist/**/*.*,node_modules/**/*.*
           projectKey: "angular-test-app-github-actions"
           projectName: "angular-test-app-github-actions"
           projectVersion: ${{ github.event.inputs.projectVersion }}
+          
+      - name: SonarQube Quality Gate check
+        uses: sonarsource/sonarqube-quality-gate-action@master
+        # Force to fail step after specific time
+        timeout-minutes: 5
+        env:
+         SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
