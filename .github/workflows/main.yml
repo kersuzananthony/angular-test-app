@@ -9,6 +9,11 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
+  workflow_dispatch:
+    inputs:
+      projectVersion:
+        description: 'Version'
+        required: true
     
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -22,6 +27,9 @@ jobs:
         
     steps:
       - uses: actions/checkout@v2
+      
+      - name: Add Sonar-Scanner
+        uses: Warchant/setup-sonar-scanner@v3
       
       - name: Cache node modules
         uses: actions/cache@v2
@@ -43,3 +51,15 @@ jobs:
       - name: npm run build CI
         run: |
           npm run build:ci
+          
+      - name: Sonar Scan
+      - name: SonarQube Scan
+        uses: sijomc/sonarscan-action@master
+        with:
+          host: ${{ secrets.SONARQUBE_HOST }}
+          login: ${{ secrets.SONARQUBE_TOKEN }}
+          scannerOptions: ${{ secrets.SCANNER_OPTIONS }}
+          exclusions: ${{ secrets.SONAR_EXCLUSIONS }}
+          projectKey: "angular-test-app-github-actions"
+          projectName: "angular-test-app-github-actions"
+          projectVersion: ${{ github.event.inputs.projectVersion }}
